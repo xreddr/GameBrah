@@ -14,12 +14,12 @@ function startGame() {
 
 function buttons() {
     allButtons = [
-        upBtn = new Rectangle(50, 50, "blue", 70, (screen.canvas.height - 170)),
-        downBtn = new Rectangle(50, 50, "blue", 70, (screen.canvas.height - 70)),
-        leftBtn = new Rectangle(50, 50, "blue", 20, (screen.canvas.height - 120)),
-        rightBtn = new Rectangle(50, 50, "blue", 120, (screen.canvas.height - 120)),
+        upBtn = new Rectangle(50, 50, "blue", 90, (screen.canvas.height - 170)),
+        downBtn = new Rectangle(50, 50, "blue", 90, (screen.canvas.height - 70)),
+        leftBtn = new Rectangle(50, 50, "blue", 40, (screen.canvas.height - 120)),
+        rightBtn = new Rectangle(50, 50, "blue", 140, (screen.canvas.height - 120)),
         aBtn = new Rectangle(50, 50, "blue", (screen.canvas.width - 170), (screen.canvas.height - 70)),
-        bBtn = new Rectangle(50, 50, "blue", (screen.canvas.width - 70), (screen.canvas.height - 70))
+        bBtn = new Rectangle(50, 50, "blue", (screen.canvas.width - 90), (screen.canvas.height - 70))
     ]
 }
 
