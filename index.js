@@ -4,6 +4,7 @@ var screen
 var allButtons = [];
 
 function startGame() {
+    document.getElementById("startButton").remove();
     screen = new GameScreen(640, 360, "black");
     myGamePiece = new Rectangle(30, 30, "red", screen.cenx, screen.ceny);
     // enemy = new Square(30, 30, "green", 20, 20)
