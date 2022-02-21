@@ -242,5 +242,3 @@ class Circle extends Component {
         this.type = "cirlce"
     };
 }
-
-startGame();
