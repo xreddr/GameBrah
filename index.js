@@ -4,22 +4,22 @@ var screen
 var allButtons = [];
 
 function startGame() {
-    document.getElementById("startButton").remove();
-    screen = new GameScreen(640, 360, "black");
+    screen = new GameScreen(innerWidth, innerHeight, "black");
     myGamePiece = new Rectangle(30, 30, "red", screen.cenx, screen.ceny);
     // enemy = new Square(30, 30, "green", 20, 20)
     // otherPiece = new Circle(40, 40, 20, "blue")
     screen.start();
+    document.getElementById("startButton").remove();
 }
 
 function buttons() {
     allButtons = [
-        upBtn = new Rectangle(50, 50, "blue", 70, 190),
-        downBtn = new Rectangle(50, 50, "blue", 70, 290),
-        leftBtn = new Rectangle(50, 50, "blue", 20, 240),
-        rightBtn = new Rectangle(50, 50, "blue", 120, 240),
-        aBtn = new Rectangle(50, 50, "blue", 490, 290),
-        bBtn = new Rectangle(50, 50, "blue", 560, 290)
+        upBtn = new Rectangle(50, 50, "blue", 70, (screen.canvas.height - 170)),
+        downBtn = new Rectangle(50, 50, "blue", 70, (screen.canvas.height - 70)),
+        leftBtn = new Rectangle(50, 50, "blue", 20, (screen.canvas.height - 120)),
+        rightBtn = new Rectangle(50, 50, "blue", 120, (screen.canvas.height - 120)),
+        aBtn = new Rectangle(50, 50, "blue", (screen.canvas.width - 170), (screen.canvas.height - 70)),
+        bBtn = new Rectangle(50, 50, "blue", (screen.canvas.width - 70), (screen.canvas.height - 70))
     ]
 }
 
