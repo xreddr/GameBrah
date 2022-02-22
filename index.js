@@ -30,6 +30,7 @@ function openFullScreen() {
     } else if (elem.msRequestFullscreen) { /* IE11 */
         elem.msRequestFullscreen();
     }
+    gameScreen.size();
 }
 
 function closeFullScreen() {
@@ -40,6 +41,7 @@ function closeFullScreen() {
     } else if (document.msExitFullscreen) { /* IE11 */
         document.msExitFullscreen();
     }
+    gameScreen.size();
 }
 
 
