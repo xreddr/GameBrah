@@ -1,180 +1,146 @@
-var myGamePiece
-// var otherPiece
-var screen
-var allButtons = [];
+var gameScreen
+var dpad
+var buttons
+var char
 
-function startGame() {
-    screen = new GameScreen(innerWidth, innerHeight, "black");
-    myGamePiece = new Rectangle(30, 30, "red", screen.cenx, screen.ceny);
-    // enemy = new Square(30, 30, "green", 20, 20)
-    // otherPiece = new Circle(40, 40, 20, "blue")
-    screen.start();
-    document.getElementById("startButton").remove();
-}
-
-function buttons() {
-    allButtons = [
-        upBtn = new Rectangle(50, 50, "blue", 90, (screen.canvas.height - 170)),
-        downBtn = new Rectangle(50, 50, "blue", 90, (screen.canvas.height - 70)),
-        leftBtn = new Rectangle(50, 50, "blue", 40, (screen.canvas.height - 120)),
-        rightBtn = new Rectangle(50, 50, "blue", 140, (screen.canvas.height - 120)),
-        aBtn = new Rectangle(50, 50, "blue", (screen.canvas.width - 170), (screen.canvas.height - 70)),
-        bBtn = new Rectangle(50, 50, "blue", (screen.canvas.width - 90), (screen.canvas.height - 70))
-    ]
+function start() {
+    gameScreen = new Screen("black", "playArea");
+    dpad = new Controller("red", "dpadArea", "dpad");
+    buttons = new Controller("red", "buttonArea", "buttons")
+    char = new Rectangle(25, 25, "red", 40, 40);
+    gameScreen.start();
 }
 
 function updateGameArea() {
-    buttons();
-    screen.borders(myGamePiece)
-    screen.clear();
-    myGamePiece.newPos();
-    myGamePiece.update(screen);
-    for (i = 0; i < allButtons.length; i++) {
-        allButtons[i].update(screen)
-    }
-    screen.touchControler(myGamePiece);
-    // enemy.update(screen);
-    // enemy.newPos();
-    // otherPiece.update(screen);
-    // if (enemy.bottom < myGamePiece.top ||
-    //     enemy.top > myGamePiece.bottom ||
-    //     enemy.right < myGamePiece.left ||
-    //     enemy.left > myGamePiece.right) {
-    //     const angle = Math.atan2(myGamePiece.y - enemy.y, myGamePiece.x - enemy.x)
-    //     // console.log(angle)
-    //     enemy.speedX = Math.cos(angle) * 5;
-    //     enemy.speedY = Math.sin(angle) * 5;
-    //     // console.log(enemy.speedX, enemy.speedY)
-
-    // } else { console.log("Got Ya") }
+    gameScreen.clear();
+    char.update(gameScreen);
+    char.newPos();
+    dpad.directionControler(char);
+    buttons.inputController(char);
 }
 
 
-class GameScreen {
-    constructor(width, height, bgcolor) {
+class CanvasArea {
+    constructor(bgcolor, area) {
         this.canvas = document.createElement("canvas");
+        this.canvas.id = area + "Canvas";
         this.context = this.canvas.getContext("2d");
-        this.canvas.width = width;
-        this.canvas.height = height;
         this.canvas.style.backgroundColor = bgcolor;
-        this.cenx = width / 2;
-        this.ceny = height / 2;
+        this.area = document.getElementById(area);
+        this.area.insertBefore(this.canvas, this.area.childNodes[0]);
+    }
+}
+
+class Controller extends CanvasArea {
+    constructor(bgcolor, area, type) {
+        super(bgcolor, area);
+        this.canvas.width = 160;
+        this.canvas.height = 160;
+        this.type = type;
+        if (this.type === "dpad") {
+            var color = "black";
+            this.upBtn = new Rectangle(50, 50, color, 55, 5)
+            this.downBtn = new Rectangle(50, 50, color, 55, 105)
+            this.leftBtn = new Rectangle(50, 50, color, 5, (this.canvas.height - 105))
+            this.rightBtn = new Rectangle(50, 50, color, 105, (this.canvas.height - 105))
+            this.upBtn.update(this);
+            this.downBtn.update(this);
+            this.leftBtn.update(this);
+            this.rightBtn.update(this);
+        }
+        if (this.type === "buttons") {
+            var color = "black"
+            this.aBtn = new Rectangle(50, 50, color, 10, 75)
+            this.bBtn = new Rectangle(50, 50, color, 100, 45)
+            this.aBtn.update(this);
+            this.bBtn.update(this);
+        }
+    }
+    listenTouch(screen) {
+        screen.touches = {}
+        screen.canvas.addEventListener('touchstart', function (e) {
+            for (var i = 0; i < e.changedTouches.length; i++) {
+                screen.touches[e.changedTouches[i].identifier] = {
+                    "x": e.changedTouches[i].clientX - screen.canvas.offsetLeft,
+                    "y": screen.y = e.changedTouches[i].clientY - screen.canvas.offsetTop
+                }
+                console.log(screen.touches)
+            }
+        })
+        screen.canvas.addEventListener('touchend', function (e) {
+            for (var i = 0; i < e.changedTouches.length; i++) {
+                delete screen.touches[e.changedTouches[i].identifier];
+            }
+        })
+        screen.canvas.addEventListener('touchmove', function (e) {
+            for (var i = 0; i < e.changedTouches.length; i++) {
+                screen.touches[e.changedTouches[i].identifier] = {
+                    "x": e.changedTouches[i].clientX - screen.canvas.offsetLeft,
+                    "y": screen.y = e.changedTouches[i].clientY - screen.canvas.offsetTop
+                }
+            }
+        })
+    }
+    directionControler(object) {
+        object.speedX = 0;
+        object.speedY = 0;
+        var speed = 2
+        // console.log(this.touches);
+        for (let key in this.touches) {
+            console.log(key, this.touches[key])
+            if (dpad.upBtn.clicked(this.touches[key])) {
+                object.speedY -= speed;
+            }
+            if (dpad.downBtn.clicked(this.touches[key])) {
+                object.speedY += speed;
+            }
+            if (dpad.rightBtn.clicked(this.touches[key])) {
+                object.speedX += speed;
+            }
+            if (dpad.leftBtn.clicked(this.touches[key])) {
+                object.speedX -= speed;
+            }
+
+        }
+    }
+    inputController(object) {
+        // console.log(this.touches);
+        for (let key in this.touches) {
+            console.log(key, this.touches[key])
+            if (buttons.aBtn.clicked(this.touches[key])) {
+                object.color = "green";
+            }
+            if (buttons.bBtn.clicked(this.touches[key])) {
+                object.color = "red";
+            }
+        }
+
+    }
+}
+
+class Screen extends CanvasArea {
+    constructor(bgcolor, area) {
+        super(bgcolor, area);
+        if (matchMedia("only screen and (orientation: portrait)").matches) {
+            this.canvas.width = innerWidth;
+            this.canvas.height = innerWidth;
+        } else if (matchMedia("only screen and (orientation: landscape)").matches) {
+            this.canvas.height = innerHeight;
+            this.canvas.width = innerHeight;
+        }
     }
     start() {
-        // Insert into document
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         // Refresh interval
         this.interval = setInterval(updateGameArea, 20);
         // Listeners
-        this.listenTouch(this);
-        this.listenMouse(this);
+        dpad.listenTouch(dpad)
+        buttons.listenTouch(buttons)
     }
     clear() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
     stop() {
         clearInterval(this.interval);
-    }
-
-    // Controllers 
-    listenTouch(screen) {
-        // window.addEventListener('touchstart', function (e) {
-        //     screen.x = e.touches[0].pageX;
-        //     screen.y = e.touches[0].pageY;
-        //     console.log('reach')
-        // })
-        // window.addEventListener('touchmove', function (e) {
-        //     screen.x = e.touches[0].pageX;
-        //     screen.y = e.touches[0].pageY;
-        // })
-        // window.addEventListener('touchend', function (e) {
-        //     screen.x = false;
-        //     screen.y = false;
-        // })
-        screen.touches = {}
-        window.addEventListener('touchstart', function (e) {
-            for (var i = 0; i < e.changedTouches.length; i++) {
-                screen.touches[e.changedTouches[i].identifier] = {
-                    "x": e.changedTouches[i].clientX,
-                    "y": screen.y = e.changedTouches[i].clientY
-                }
-                // console.log(screen.touches)
-                // screen.x = e.changedTouches[i].clientX;
-                // screen.y = e.changedTouches[i].clientY;
-            }
-        })
-        window.addEventListener('touchend', function (e) {
-            for (var i = 0; i < e.changedTouches.length; i++) {
-                delete screen.touches[e.changedTouches[i].identifier];
-            }
-        })
-        window.addEventListener('touchmove', function (e) {
-            for (var i = 0; i < e.changedTouches.length; i++) {
-                screen.touches[e.changedTouches[i].identifier] = {
-                    "x": e.changedTouches[i].clientX,
-                    "y": screen.y = e.changedTouches[i].clientY
-                }
-            }
-        })
-        // window.addEventListener('touchcancel', function (e) {
-        //     for (var i = 0; i < e.changedTouches.length; i++) {
-        //         screen.x = e.changedTouches[i].clientX;
-        //         screen.y = e.changedTouches[i].clientY;
-        //     }
-        // })
-    }
-    listenMouse(screen) {
-        window.addEventListener('mousedown', function (e) {
-            screen.x = e.pageX;
-            screen.y = e.pageY;
-        })
-        window.addEventListener('mouseup', function (e) {
-            screen.x = false;
-            screen.y = false;
-        })
-    }
-    touchControler(object) {
-        object.speedX = 0;
-        object.speedY = 0;
-        // console.log(this.touches);
-        for (let key in this.touches) {
-            // console.log(key, this.touches[key])
-            if (upBtn.clicked(this.touches[key])) {
-                object.speedY -= 1;
-            }
-            if (downBtn.clicked(this.touches[key])) {
-                object.speedY += 1;
-            }
-            if (rightBtn.clicked(this.touches[key])) {
-                object.speedX += 1;
-            }
-            if (leftBtn.clicked(this.touches[key])) {
-                object.speedX -= 1;
-            }
-            if (aBtn.clicked(this.touches[key])) {
-                object.color = "green";
-            }
-            if (bBtn.clicked(this.touches[key])) {
-                object.color = "red";
-            }
-        }
-    }
-
-
-    // Borders
-    borders(object) {
-        if (object.right > this.canvas.width && this.x > this.canvas.width) {
-            this.x = false;
-        }
-        if (object.bottom > this.canvas.height && this.y > this.canvas.height) {
-            this.y = false;
-        }
-        if (object.left < 0 && this.x < 0) {
-            this.x = false;
-        }
-        if (object.top < 0 && this.y < 0) {
-            this.y = false;
-        }
     }
 }
 
@@ -209,16 +175,7 @@ class Component {
             this.edge = this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         }
     };
-    clicked(key) {
-        var clicked = true;
-        if (this.bottom < key["y"] ||
-            this.top > key["y"] ||
-            this.right < key["x"] ||
-            this.left > key["x"]) {
-            clicked = false;
-        }
-        return clicked;
-    }
+
 }
 
 class Rectangle extends Component {
@@ -230,6 +187,17 @@ class Rectangle extends Component {
         this.x = x;
         this.y = y;
         this.type = "square";
+    }
+    clicked(key) {
+        console.log('reach')
+        var clicked = true;
+        if (this.bottom < key["y"] ||
+            this.top > key["y"] ||
+            this.right < key["x"] ||
+            this.left > key["x"]) {
+            clicked = false;
+        }
+        return clicked;
     }
 }
 
@@ -243,3 +211,5 @@ class Circle extends Component {
         this.type = "cirlce"
     };
 }
+
+start();
