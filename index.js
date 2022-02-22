@@ -3,6 +3,7 @@ var dpad
 var buttons
 var char
 
+
 function start() {
     gameScreen = new Screen("black", "playArea");
     dpad = new Controller("red", "dpadArea", "dpad");
@@ -19,6 +20,35 @@ function updateGameArea() {
     buttons.inputController(char);
 }
 
+// Full Screen Experience Samples
+var elem = document.documentElement;
+function openFullScreen() {
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+    }
+}
+
+function closeFullScreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { /* Safari */
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE11 */
+        document.msExitFullscreen();
+    }
+}
+
+window.addEventListener("load", function () {
+    setTimeout(function () {
+        // This hides the address bar:
+        window.scrollTo(0, 1);
+    }, 0);
+});
+
 
 class CanvasArea {
     constructor(bgcolor, area) {
@@ -27,7 +57,7 @@ class CanvasArea {
         this.context = this.canvas.getContext("2d");
         this.canvas.style.backgroundColor = bgcolor;
         this.area = document.getElementById(area);
-        this.area.insertBefore(this.canvas, this.area.childNodes[0]);
+        this.area.insertBefore(this.canvas, this.area.childNodes[-1]);
     }
 }
 
@@ -36,6 +66,7 @@ class Controller extends CanvasArea {
         super(bgcolor, area);
         this.canvas.width = 160;
         this.canvas.height = 160;
+        this.canvas.style.borderRadius = "20%"
         this.type = type;
         if (this.type === "dpad") {
             var color = "black";

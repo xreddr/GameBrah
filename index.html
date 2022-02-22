@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>g1</title>
     <!-- <link rel="stylesheet" href="css/main.css"> -->
     <style>
@@ -29,13 +29,16 @@
 
         #playArea {
             background-color: yellow;
+            z-index: 2;
         }
 
         #dpadArea {
             background-color: orange;
             display: flex;
             justify-content: center;
-            align-items: flex-end;
+            align-items: center;
+            flex-wrap: wrap;
+            z-index: 1;
             padding-bottom: 15px;
         }
 
@@ -43,7 +46,9 @@
             background-color: orange;
             display: flex;
             justify-content: center;
-            align-items: flex-end;
+            align-items: center;
+            flex-wrap: wrap;
+            z-index: 1;
             padding-bottom: 15px;
         }
 
@@ -95,8 +100,11 @@
 <body>
     <main id="gameContainer">
         <section id="playArea"></section>
-        <section id="dpadArea"></section>
-        <section id="buttonArea"></section>
+        <section id="dpadArea">GameBrah(R)</section>
+        <section id="buttonArea">
+            <button onclick="openFullScreen();">Full Screen</button>
+            <button onclick="closeFullScreen();">Exit FS</button>
+        </section>
     </main>
     <script src="index.js"></script>
 </body>
