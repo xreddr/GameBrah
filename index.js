@@ -42,12 +42,7 @@ function closeFullScreen() {
     }
 }
 
-window.addEventListener("load", function () {
-    setTimeout(function () {
-        // This hides the address bar:
-        window.scrollTo(0, 1);
-    }, 0);
-});
+
 
 
 class CanvasArea {
@@ -118,7 +113,7 @@ class Controller extends CanvasArea {
         var speed = 2
         // console.log(this.touches);
         for (let key in this.touches) {
-            console.log(key, this.touches[key])
+            // console.log(key, this.touches[key])
             if (dpad.upBtn.clicked(this.touches[key])) {
                 object.speedY -= speed;
             }
@@ -160,12 +155,24 @@ class Screen extends CanvasArea {
             this.canvas.width = innerHeight;
         }
     }
+    size() {
+        // Hardcode variables
+        if (matchMedia("only screen and (orientation: portrait)").matches) {
+            gameScreen.canvas.width = innerWidth;
+            gameScreen.canvas.height = innerWidth;
+        } else if (matchMedia("only screen and (orientation: landscape)").matches) {
+            gameScreen.canvas.height = innerHeight;
+            gameScreen.canvas.width = innerHeight;
+        }
+    }
     start() {
         // Refresh interval
         this.interval = setInterval(updateGameArea, 20);
         // Listeners
         dpad.listenTouch(dpad)
         buttons.listenTouch(buttons)
+        //Hardcode resizer
+        window.addEventListener('resize', gameScreen.size);
     }
     clear() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
