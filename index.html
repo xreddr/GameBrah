@@ -35,7 +35,8 @@
         #dpadArea {
             background-color: orange;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: space-around;
             align-items: center;
             flex-wrap: wrap;
             z-index: 1;
@@ -45,7 +46,8 @@
         #buttonArea {
             background-color: orange;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: space-around;
             align-items: center;
             flex-wrap: wrap;
             z-index: 1;
@@ -102,8 +104,10 @@
         <section id="playArea"></section>
         <section id="dpadArea">GameBrah(R)</section>
         <section id="buttonArea">
-            <button onclick="openFullScreen();">Full Screen</button>
-            <button onclick="closeFullScreen();">Exit FS</button>
+            <div id="FSbuttons">
+                <button onclick="openFullScreen();">Full Screen</button>
+                <button onclick="closeFullScreen();">Exit FS</button>
+            </div>
         </section>
     </main>
     <script src="index.js"></script>
